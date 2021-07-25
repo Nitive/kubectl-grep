@@ -50,3 +50,7 @@ $ kubectl get node -o yaml | kgrep --show-status ker  # or kgrep -s ker
 .worker-1.status.nodeInfo.kernelVersion: 4.19.0-11-amd64
 .worker-2.status.nodeInfo.kernelVersion: 4.19.0-11-amd64
 ```
+
+## Installation
+
+Download latest release from releases page and but the binary in your PATH
