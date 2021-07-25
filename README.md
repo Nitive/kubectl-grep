@@ -2,6 +2,8 @@
 
 Find the right peace in `kubectl get -o yaml` output. Pass substring of key to `kgrep` and it will find all matching keys.
 
+![Demo](./demo.png)
+
 ## Examples
 
 Show resource requests for all deployments in namespace
