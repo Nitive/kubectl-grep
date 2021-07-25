@@ -89,11 +89,65 @@ func parse(data interface{}, path string, opts AppOptions) []ParseResult {
 	case reflect.Slice:
 		for i, v := range untypedValue.Interface().([]interface{}) {
 			innerPath := fmt.Sprintf("%s[%d]", path, i)
+
+			name := getName(reflect.ValueOf(v))
+			if name != "" {
+				innerPath = fmt.Sprintf("%s.%s", path, name)
+			}
+
+			metadataName := getMetadataName(reflect.ValueOf(v))
+			if metadataName != "" {
+				innerPath = fmt.Sprintf("%s.%s", path, metadataName)
+			}
+
 			results = append(results, parse(v, innerPath, opts)...)
 		}
 	}
 
 	return results
+}
+
+func getString(v reflect.Value) string {
+	switch v.Kind() {
+	case reflect.String:
+		return v.String()
+	case reflect.Interface:
+		unwrapedValue, ok := v.Interface().(string)
+		if !ok {
+			return ""
+		}
+		return unwrapedValue
+	default:
+		return ""
+	}
+}
+
+func getProp(v reflect.Value, prop string) reflect.Value {
+	value := (v.MapIndex(reflect.ValueOf(prop)))
+	if value.Kind() == reflect.Interface {
+		return reflect.ValueOf(value.Interface())
+	}
+
+	return value
+}
+
+func getName(m reflect.Value) string {
+	if m.Kind() == reflect.Map {
+		return getString(getProp(m, "name"))
+	}
+
+	return ""
+}
+
+func getMetadataName(v reflect.Value) string {
+	if v.Kind() == reflect.Map {
+		metadata := getProp(v, "metadata")
+		if metadata.Kind() == reflect.Map {
+			return getString(getProp(metadata, "name"))
+		}
+	}
+
+	return ""
 }
 
 type AppOptions struct {

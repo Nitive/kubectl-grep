@@ -1,10 +1,8 @@
 .PHONY: *
 
 build:
-	@ go build -ldflags '-s -w' -o kubectl-grep main.go
+	@ mkdir -p bin
+	@ go build -ldflags '-s -w' -o bin/kgrep main.go
 
 test: build
 	@ go test ./...
-
-demo: build
-	@ echo 'spec:\n  image: nginx' | ./kubectl-grep image

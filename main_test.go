@@ -79,7 +79,7 @@ metadata:
 `), AppOptions{Search: "labels"})
   require.Empty(t, result.Error)
   td.Cmp(t, 0, result.ExitCode)
-  td.Cmp(t, result.Yaml, `.items[0].metadata.labels:
+  td.Cmp(t, result.Yaml, `.items.selenium.metadata.labels:
   app: selenium
   release: selenium
 `)
@@ -217,4 +217,38 @@ spec:
         values:
         - available
 `)
+}
+
+func TestContainerNameInPath(t *testing.T) {
+  result := app([]byte(`
+apiVersion: v1
+kind: Pod
+metadata:
+  name: selenium-chrome
+spec:
+  containers:
+  - name: selenium
+    image: selenium/standalone-chrome:3
+`), AppOptions{Search: "image", ExactMatch: true})
+  require.Empty(t, result.Error)
+  td.Cmp(t, 0, result.ExitCode)
+  td.Cmp(t, result.Yaml, ".spec.containers.selenium.image: selenium/standalone-chrome:3\n")
+}
+
+func TestPodNameInPath(t *testing.T) {
+  result := app([]byte(`
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    name: selenium-chrome
+  spec:
+    containers:
+    - name: selenium
+      image: selenium/standalone-chrome:3
+`), AppOptions{Search: "image", ExactMatch: true})
+  require.Empty(t, result.Error)
+  td.Cmp(t, 0, result.ExitCode)
+  td.Cmp(t, result.Yaml, ".items.selenium-chrome.spec.containers.selenium.image: selenium/standalone-chrome:3\n")
 }
