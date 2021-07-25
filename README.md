@@ -53,6 +53,15 @@ $ kubectl get node -o yaml | kgrep --show-status ker  # or kgrep -s ker
 .worker-2.status.nodeInfo.kernelVersion: 4.19.0-11-amd64
 ```
 
+## Syntax highlighting
+
+1. Install [bat](https://github.com/sharkdp/bat)
+2. Configure kgrep to pass it's output into `bat` via environment variable `KUBECTL_GREP_PASS_OUTPUT`
+   ```sh
+   # ~/.profile
+   export KUBECTL_GREP_PASS_OUTPUT="bat --language yaml --style plain --color always"
+   ```
+
 ## Installation
 
 Download latest release from releases page and but the binary in your PATH
