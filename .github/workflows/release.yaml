@@ -13,9 +13,11 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        # build and publish in parallel: linux/amd64, windows/amd64, darwin/amd64
         goos: [linux, windows, darwin]
         goarch: [amd64, arm]
+        exclude:
+          - goos: darwin
+            goarch: arm
     steps:
       - uses: actions/checkout@v2
 
